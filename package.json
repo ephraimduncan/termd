@@ -13,10 +13,12 @@
         "@types/node": "^14.14.10",
         "axios": "^0.21.0",
         "caporal": "^1.4.0",
+        "chalk": "^4.1.0",
         "marked": "^1.2.5",
         "marked-terminal": "^4.1.0",
         "remark-parse": "^9.0.0",
         "remark-stringify": "^9.0.0",
+        "terminal-link": "^2.1.1",
         "unified": "^9.2.0",
         "unist-util-visit": "^2.0.3"
     },
