@@ -9,3 +9,10 @@ export const toAst = (markdown: string) => {
 export const toMarkdown = (node: any) => {
     return unified().use(stringify).stringify(node);
 };
+
+export const isMarkdownTable = (text: string) => {
+    // https://github.com/erikvullings/slimdown-js/blob/master/src/slimdown.ts 125
+    return /(\|[^\n]+\|\r?\n)((?:\|:?[-]+:?)+\|)(\n(?:\|[^\n]+\|\r?\n?)*)?/g.test(
+        text
+    );
+};

@@ -3,11 +3,17 @@
 import chalk from 'chalk';
 import terminalLink from 'terminal-link';
 import traverser from 'unist-util-visit';
-import { toAst, toMarkdown } from './utils';
+import { isMarkdownTable, toAst, toMarkdown } from './utils';
+import { createMarkdownArrayTable } from 'parse-markdown-table';
+import Table from 'cli-table';
 import cardinal from 'cardinal';
 
 const markdownAst = toAst(`
-
+| Tables   |      Are      |  Cool |
+|----------|---------------|-------|
+| col 1 is |  left-aligned | $1600 |
+| col 2 is |    centered   |   $12 |
+| col 3 is | right-aligned | $1 |
 `);
 
 // console.dir(markdownAst, { depth: null });
@@ -68,7 +74,7 @@ traverser(markdownAst, (node, index, parent) => {
             case 'paragraph':
                 switch ((parent as any).kind) {
                     case 'blockquote':
-                        node.value = chalk.gray.italic('> ' + node.value);
+                        node.value = '┃ ' + chalk.gray.italic(node.value);
                         break;
 
                     case 'listItem':
@@ -88,12 +94,6 @@ traverser(markdownAst, (node, index, parent) => {
         case 'inlineCode':
             node.value = chalk.yellow(node.value);
             node.type = 'text';
-            console.log(node);
-            break;
-
-        case 'text':
-            node.value += '\n';
-            console.log(node.value);
             break;
 
         case 'thematicBreak':
@@ -114,6 +114,51 @@ traverser(markdownAst, (node, index, parent) => {
 
             console.log((codeLang as string) + (node.value as string));
             break;
+    }
+
+    if (node.type === 'text') {
+        const renderText = async () => {
+            if (isMarkdownTable(node.value as string)) {
+                const tableArray = await createMarkdownArrayTable(
+                    node.value as string
+                );
+
+                let headers = [...tableArray.headers];
+
+                const table = new Table({
+                    head: headers,
+                    chars: {
+                        top: '═',
+                        'top-mid': '╤',
+                        'top-left': '╔',
+                        'top-right': '╗',
+                        bottom: '═',
+                        'bottom-mid': '╧',
+                        'bottom-left': '╚',
+                        'bottom-right': '╝',
+                        left: '║',
+                        'left-mid': '╟',
+                        mid: '─',
+                        'mid-mid': '┼',
+                        right: '║',
+                        'right-mid': '╢',
+                        middle: '│',
+                    },
+                    style: { compact: true, 'padding-left': 1 },
+                });
+
+                for await (let row of tableArray.rows) {
+                    !row[0].includes('-') && table.push(row);
+                }
+
+                node.value = table.toString();
+            }
+        };
+        renderText();
+        setTimeout(() => {
+            node.value += '\n';
+            console.log(node.value);
+        }, 100);
     }
 });
 
