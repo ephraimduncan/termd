@@ -79,7 +79,6 @@ export const transformer = (mdast: Node) => {
             case 'image':
                 const link = terminalLink(node.alt as string, node.url as string);
                 node.value = chalk.gray.italic(`Image: ${link}`);
-                node.type = 'text'; // May not be important
                 break;
 
             case 'inlineCode':
