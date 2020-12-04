@@ -10,14 +10,11 @@
         "npmd": "index.ts"
     },
     "dependencies": {
-        "@types/node": "^14.14.10",
         "axios": "^0.21.0",
         "caporal": "^1.4.0",
         "cardinal": "^2.1.1",
         "chalk": "^4.1.0",
         "cli-table": "^0.3.1",
-        "marked": "^1.2.5",
-        "marked-terminal": "^4.1.0",
         "parse-markdown-table": "0.0.4",
         "remark-parse": "^9.0.0",
         "remark-stringify": "^9.0.0",
@@ -27,8 +24,7 @@
     },
     "devDependencies": {
         "@types/cli-table": "^0.3.0",
-        "@types/marked": "^1.2.0",
-        "@types/marked-terminal": "^3.1.1",
+        "@types/node": "^14.14.10",
         "@types/unist": "^2.0.3"
     }
 }
