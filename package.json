@@ -1,7 +1,7 @@
 {
     "name": "npmd",
     "version": "0.0.0",
-    "description": "npm package Doc's in the terminal",
+    "description": "Read markdown in the terminal",
     "main": "index.js",
     "keywords": [],
     "author": "Ephraim Atta-Duncan <ephraimduncan68@gmail.com>",

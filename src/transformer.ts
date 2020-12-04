@@ -7,8 +7,8 @@ import Table from 'cli-table';
 import cardinal from 'cardinal';
 import { Node } from 'unist';
 
-export const transformer = async (markdownAst: Node) => {
-    traverser(markdownAst, (node, _, parent) => {
+export const transformer = (mdast: Node) => {
+    traverser(mdast, (node, _, parent) => {
         if (node.type === 'paragraph') {
             switch ((parent as any).type) {
                 case 'blockquote':
@@ -92,8 +92,8 @@ export const transformer = async (markdownAst: Node) => {
                 break;
 
             case 'thematicBreak':
-                console.log(
-                    chalk.reset('_'.repeat(process.stdout.columns) + '\n')
+                node.value = chalk.reset(
+                    '_'.repeat(process.stdout.columns) + '\n'
                 );
                 break;
 
@@ -109,7 +109,7 @@ export const transformer = async (markdownAst: Node) => {
                     node.value = chalk.gray(node.value);
                 }
 
-                console.log((codeLang as string) + (node.value as string));
+                node.value = codeLang + node.value;
                 break;
         }
 
@@ -154,7 +154,7 @@ export const transformer = async (markdownAst: Node) => {
             renderText();
             setTimeout(() => {
                 node.value += '\n';
-                console.log(node.value);
+                node.value;
             }, 100);
         }
     });
