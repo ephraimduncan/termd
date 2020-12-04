@@ -9,6 +9,10 @@ import { Node } from 'unist';
 
 export const transformer = (mdast: Node) => {
     traverser(mdast, (node, _, parent) => {
+        if (node.type === 'listItem') {
+            node.parent = parent?.type;
+        }
+
         if (node.type === 'paragraph') {
             switch ((parent as any).type) {
                 case 'blockquote':
@@ -28,9 +32,7 @@ export const transformer = (mdast: Node) => {
                             node.value = chalk.bold.underline.red(node.value);
                             break;
                         case 2:
-                            node.value = chalk.cyan
-                                .hex('#e78a4e')
-                                .bold(node.value);
+                            node.value = chalk.cyan.hex('#e78a4e').bold(node.value);
                             break;
                         case 3:
                             node.value = chalk.yellow.bold(node.value);
@@ -48,10 +50,7 @@ export const transformer = (mdast: Node) => {
                     break;
 
                 case 'link':
-                    const link = terminalLink(
-                        node.value as string,
-                        (parent as any).url
-                    );
+                    const link = terminalLink(node.value as string, (parent as any).url);
                     node.value = chalk.blue(link);
                     break;
 
@@ -78,10 +77,7 @@ export const transformer = (mdast: Node) => {
 
         switch (node.type) {
             case 'image':
-                const link = terminalLink(
-                    node.alt as string,
-                    node.url as string
-                );
+                const link = terminalLink(node.alt as string, node.url as string);
                 node.value = chalk.gray.italic(`Image: ${link}`);
                 node.type = 'text'; // May not be important
                 break;
@@ -92,15 +88,11 @@ export const transformer = (mdast: Node) => {
                 break;
 
             case 'thematicBreak':
-                node.value = chalk.reset(
-                    '_'.repeat(process.stdout.columns) + '\n'
-                );
+                node.value = chalk.reset('_'.repeat(process.stdout.columns) + '\n');
                 break;
 
             case 'code':
-                const codeLang = node.lang
-                    ? chalk.gray('// ' + node.lang + '\n')
-                    : '\n';
+                const codeLang = node.lang ? chalk.gray('// ' + node.lang + '\n') : '\n';
                 const supportedColorLanguages = ['js', 'ts', 'json'];
                 node.value += '\n';
                 if (supportedColorLanguages.includes((node as any).lang)) {
