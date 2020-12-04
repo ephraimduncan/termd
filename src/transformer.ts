@@ -148,6 +148,7 @@ export const transformer = (mdast: Node) => {
                         !row[0].includes('-') && table.push(row);
                     }
 
+                    node.type = 'table';
                     node.value = table.toString();
                 }
             };
