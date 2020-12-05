@@ -1,18 +1,12 @@
 import chalk from 'chalk';
 import terminalLink from 'terminal-link';
 import traverser from 'unist-util-visit';
-import { isMarkdownTable } from './utils';
-import { createMarkdownArrayTable } from 'parse-markdown-table';
-import Table from 'cli-table';
+import { isMarkdownTable, prettifyTable } from './utils';
 import cardinal from 'cardinal';
 import { Node } from 'unist';
 
-export const transformer = (mdast: Node) => {
+export const transformer = async (mdast: Node) => {
     traverser(mdast, (node, _, parent) => {
-        if (node.type === 'listItem') {
-            node.parent = parent?.type;
-        }
-
         if (node.type === 'paragraph') {
             switch ((parent as any).type) {
                 case 'blockquote':
@@ -92,9 +86,8 @@ export const transformer = (mdast: Node) => {
 
             case 'code':
                 const codeLang = node.lang ? chalk.gray('// ' + node.lang + '\n') : '\n';
-                const supportedColorLanguages = ['js', 'ts', 'json'];
                 node.value += '\n';
-                if (supportedColorLanguages.includes((node as any).lang)) {
+                if (node.lang === 'ts' || node.lang === 'js' || node.lang === 'json') {
                     node.value = cardinal.highlight(node.value);
                 } else {
                     node.value = chalk.gray(node.value);
@@ -105,49 +98,9 @@ export const transformer = (mdast: Node) => {
         }
 
         if (node.type === 'text') {
-            const renderText = async () => {
-                if (isMarkdownTable(node.value as string)) {
-                    const tableArray = await createMarkdownArrayTable(
-                        node.value as string
-                    );
-
-                    let headers = [...tableArray.headers];
-
-                    const table = new Table({
-                        head: headers,
-                        chars: {
-                            top: '═',
-                            'top-mid': '╤',
-                            'top-left': '╔',
-                            'top-right': '╗',
-                            bottom: '═',
-                            'bottom-mid': '╧',
-                            'bottom-left': '╚',
-                            'bottom-right': '╝',
-                            left: '║',
-                            'left-mid': '╟',
-                            mid: '─',
-                            'mid-mid': '┼',
-                            right: '║',
-                            'right-mid': '╢',
-                            middle: '│',
-                        },
-                        style: { compact: true, 'padding-left': 1 },
-                    });
-
-                    for await (let row of tableArray.rows) {
-                        !row[0].includes('-') && table.push(row);
-                    }
-
-                    node.type = 'table';
-                    node.value = table.toString();
-                }
-            };
-            renderText();
-            setTimeout(() => {
-                node.value += '\n';
-                node.value;
-            }, 100);
+            if (isMarkdownTable(node.value as string)) {
+                node.value = prettifyTable(node.value as string);
+            }
         }
     });
 };
