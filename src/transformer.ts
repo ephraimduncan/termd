@@ -86,14 +86,13 @@ export const transformer = async (mdast: Node) => {
                 break;
 
             case 'code':
-                const codeLang = node.lang ? chalk.gray('// ' + node.lang + '\n') : '\n';
+                const codeLang = node.lang ? chalk.gray('// ' + node.lang + '\n') : '';
                 node.value += '\n';
                 if (node.lang === 'ts' || node.lang === 'js' || node.lang === 'json') {
                     node.value = cardinal.highlight(node.value);
                 } else {
                     node.value = chalk.gray(node.value);
                 }
-
                 node.value = codeLang + node.value;
                 break;
         }
