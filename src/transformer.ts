@@ -21,6 +21,7 @@ export const transformer = async (mdast: Node) => {
         if (node.type === 'text') {
             switch ((parent as any).type) {
                 case 'heading':
+                    node.value += '\n';
                     switch ((parent as any).depth) {
                         case 1:
                             node.value = chalk.bold.underline.red(node.value);
