@@ -13,7 +13,7 @@ require('@vercel/ncc')(file, {
     cache: './custom/cache/path' | false,
     externals: ['externalpackage'],
     filterAssetBase: process.cwd(), // default
-    minify: false, // default
+    minify: true, // default
     sourceMap: false, // default
     sourceMapBasePrefix: '../', // default treats sources as output-relative
     sourceMapRegister: true, // default

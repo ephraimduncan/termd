@@ -22,7 +22,7 @@ $ npm install --g termd
     Heading 1
 
     $ termd -s "# Heading 1"
-    # Heading 1
+    Heading 1
 ```
 
 ## License
