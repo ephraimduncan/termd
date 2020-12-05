@@ -3,6 +3,7 @@ import parser from 'remark-parse';
 import stringify from 'remark-stringify';
 import marktable from 'marktable';
 import Table from 'cli-table';
+import Axios from 'axios';
 
 export const toAst = (markdown: string) => {
     return unified().use(parser).parse(markdown);
@@ -57,4 +58,9 @@ export const prettifyTable = (mdt: string): string => {
     });
 
     return table.toString();
+};
+
+export const getMarkdownFromUrl = async (url: string): Promise<string> => {
+    const requestData = await Axios.get(url);
+    return requestData.data as string;
 };
