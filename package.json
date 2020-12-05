@@ -14,7 +14,7 @@
         "cli"
     ],
     "scripts": {
-        "build": "ncc build index.ts -o dist"
+        "build": "node build.js"
     },
     "author": "Ephraim Atta-Duncan <ephraimduncan68@gmail.com>",
     "license": "MIT",
