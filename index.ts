@@ -1,5 +1,5 @@
 #!/usr/bin/env ts-node
-import meow from 'meow';
+import meow = require('meow');
 import renderMarkdown, { renderString } from './src/termd';
 import { getMarkdownFromUrl } from './src/utils';
 
