@@ -1,7 +1,7 @@
 #!/usr/bin/env ts-node
 import meow = require('meow');
 import renderMarkdown, { renderString } from './src/termd';
-import { getMarkdownFromUrl } from './src/utils';
+import { getMarkdownFromUrl, npmPackageUrl } from './src/utils';
 
 const cli = meow(`
   Usage
@@ -10,6 +10,7 @@ const cli = meow(`
   Options
     --string, -s  Use a string with markdown syntax
     --url, -u     Render markdown from url in the terminal
+    --npm, -n     Render npm package readme in the terminal
 
   Examples
     $ termd readme.md // # Heading 1
@@ -18,6 +19,8 @@ const cli = meow(`
     ${renderString('# Heading 1')}
     $ termd --url="https://gist.githubusercontent.com/dephraiim/..."
     ${renderString('# Heading 1')}
+    $ termd -n termd
+    ...
 `);
 
 try {
@@ -34,6 +37,17 @@ try {
         let url = (cli.flags.u as string) || (cli.flags.url as string);
         getMarkdownFromUrl(url)
             .then((string) => console.log(renderString(string)))
+            .catch((e) => {
+                throw new Error(e);
+            });
+    }
+
+    if (cli.flags.n || cli.flags.npm) {
+        let packageName = (cli.flags.n as string) || (cli.flags.npm as string);
+        let packageUrl = npmPackageUrl(packageName);
+        getMarkdownFromUrl(packageUrl)
+            .then((data) => data.readme)
+            .then((readme) => console.log(renderString(readme)))
             .catch((e) => {
                 throw new Error(e);
             });
