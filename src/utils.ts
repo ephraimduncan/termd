@@ -60,7 +60,13 @@ export const prettifyTable = (mdt: string): string => {
     return table.toString();
 };
 
-export const getMarkdownFromUrl = async (url: string): Promise<string> => {
+export const getMarkdownFromUrl = async (url: string): Promise<any> => {
     const requestData = await Axios.get(url);
-    return requestData.data as string;
+    return requestData.data;
+};
+
+export const npmPackageUrl = (packageName: string): string => {
+    const NPM_REGISTRY = 'https://registry.npmjs.com/';
+
+    return NPM_REGISTRY + packageName;
 };
