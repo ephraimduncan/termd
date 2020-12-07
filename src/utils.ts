@@ -70,3 +70,8 @@ export const npmPackageUrl = (packageName: string): string => {
 
     return NPM_REGISTRY + packageName;
 };
+
+export const githubReadmeUrl = (repoName: string): string => {
+    const GITHUB_URL = `https://api.github.com/repos/${repoName}/readme`;
+    return GITHUB_URL;
+};
