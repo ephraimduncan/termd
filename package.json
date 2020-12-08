@@ -29,6 +29,7 @@
         "cli-table": "^0.3.1",
         "marktable": "^0.1.2",
         "meow": "^8.0.0",
+        "prism-cli": "^0.5.3",
         "remark-parse": "^9.0.0",
         "remark-stringify": "^9.0.0",
         "terminal-link": "^2.1.1",

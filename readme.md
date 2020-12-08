@@ -4,7 +4,7 @@
 
 ## Install
 
-```
+```bash
 $ npm install --g termd
 ```
 

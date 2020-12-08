@@ -4,6 +4,7 @@ import traverser from 'unist-util-visit';
 import { isMarkdownTable, prettifyTable } from './utils';
 import cardinal from 'cardinal';
 import { Node } from 'unist';
+import highlight from 'prism-cli';
 
 export const transformer = async (mdast: Node) => {
     traverser(mdast, (node, _, parent) => {
@@ -91,7 +92,11 @@ export const transformer = async (mdast: Node) => {
                 if (node.lang === 'ts' || node.lang === 'js' || node.lang === 'json') {
                     node.value = cardinal.highlight(node.value);
                 } else {
-                    node.value = chalk.gray(node.value);
+                    try {
+                        node.value = highlight(node.value, node.lang);
+                    } catch (error) {
+                        node.value = chalk.gray(node.value);
+                    }
                 }
                 node.value = codeLang + node.value;
                 break;
