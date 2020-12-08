@@ -1,8 +1,9 @@
 const fs = require('fs');
 const { resolve } = require('path');
 const tsc = require('tsc-prog');
+const rm = require('rimraf');
 
-fs.rmdirSync('./dist');
+if (fs.existsSync(resolve('dist'))) rm.sync('dist');
 
 const file = resolve('index.ts');
 let fileContents = fs.readFileSync(file, 'utf8');
