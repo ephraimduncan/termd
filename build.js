@@ -1,36 +1,29 @@
 const fs = require('fs');
 const { resolve } = require('path');
+const tsc = require('tsc-prog');
+
+fs.rmdirSync('./dist');
 
 const file = resolve('index.ts');
-const fileContents = fs.readFileSync(file, 'utf8');
-const formatted = fileContents.replace(
-    /#!\/usr\/bin\/env ts-node/g,
-    '#!/usr/bin/env node'
-);
+let fileContents = fs.readFileSync(file, 'utf8');
+let formatted = fileContents.replace(/#!\/usr\/bin\/env ts-node/g, '#!/usr/bin/env node');
+
 fs.writeFileSync(file, formatted, 'utf8');
 
-require('@vercel/ncc')(file, {
-    cache: './custom/cache/path' | false,
-    externals: ['externalpackage'],
-    filterAssetBase: process.cwd(), // default
-    minify: true, // default
-    sourceMap: false, // default
-    sourceMapBasePrefix: '../', // default treats sources as output-relative
-    sourceMapRegister: true, // default
-    watch: false, // default
-    license: '', // default does not generate a license file
-    v8cache: false, // default
-    quiet: false, // default
-    debugLog: false, // default
-}).then(({ code }) => {
-    fs.writeFileSync(resolve('./dist/index.js'), code, 'utf8');
-
-    const fileContents = fs.readFileSync(file, 'utf8');
-    const formatted = fileContents.replace(
-        /#!\/usr\/bin\/env node/g,
-        '#!/usr/bin/env ts-node'
-    );
-    fs.writeFileSync(file, formatted, 'utf8');
-
-    console.log('Build Complete.');
+tsc.build({
+    basePath: __dirname,
+    configFilePath: 'tsconfig.json',
+    compilerOptions: {
+        outDir: 'dist',
+        declaration: true,
+        skipLibCheck: true,
+    },
+    exclude: ['./test'],
 });
+
+fileContents = fs.readFileSync(file, 'utf8');
+formatted = fileContents.replace(/#!\/usr\/bin\/env node/g, '#!/usr/bin/env ts-node');
+fs.writeFileSync(file, formatted, 'utf8');
+
+fs.copyFileSync('package.json', './dist/package.json');
+fs.copyFileSync('readme.md', './dist/readme.md');
