@@ -1,10 +1,9 @@
 import chalk from 'chalk';
 import terminalLink from 'terminal-link';
 import traverser from 'unist-util-visit';
-import { isMarkdownTable, prettifyTable } from './utils';
+import { highlightWithPrism, isMarkdownTable, prettifyTable } from './utils';
 import cardinal from 'cardinal';
 import { Node } from 'unist';
-import highlight from 'prism-cli';
 
 export const transformer = async (mdast: Node) => {
     traverser(mdast, (node, _, parent) => {
@@ -93,7 +92,10 @@ export const transformer = async (mdast: Node) => {
                     node.value = cardinal.highlight(node.value);
                 } else {
                     try {
-                        node.value = highlight(node.value, node.lang);
+                        node.value = highlightWithPrism(
+                            node.value as string,
+                            node.lang as string
+                        );
                     } catch (error) {
                         node.value = chalk.gray(node.value);
                     }
