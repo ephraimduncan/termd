@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import terminalLink from 'terminal-link';
 import traverser from 'unist-util-visit';
-import { isMarkdownTable, prettifyTable } from './utils';
+import { highlightWithPrism, isMarkdownTable, prettifyTable } from './utils';
 import cardinal from 'cardinal';
 import { Node } from 'unist';
 
@@ -91,7 +91,14 @@ export const transformer = async (mdast: Node) => {
                 if (node.lang === 'ts' || node.lang === 'js' || node.lang === 'json') {
                     node.value = cardinal.highlight(node.value);
                 } else {
-                    node.value = chalk.gray(node.value);
+                    try {
+                        node.value = highlightWithPrism(
+                            node.value as string,
+                            node.lang as string
+                        );
+                    } catch (error) {
+                        node.value = chalk.gray(node.value);
+                    }
                 }
                 node.value = codeLang + node.value;
                 break;
