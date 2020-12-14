@@ -6,10 +6,19 @@
 
 Preview and render markdown files in the terminal with color syntax highlighting. Also render markdown from a given `url` or from a GitHub repository and an npm package.
 
+## Screenshots
+
+![Image1](./assets/screenshot1.png)
+
+![Image2](./assets/screenshot.png)
+
 ## Installation
 
 ```sh
 npm install -g termd
+
+# Using `npx`
+npx termd [options]
 ```
 
 ## Usage example
